@@ -1,15 +1,27 @@
-import { View, Image, StatusBar } from "react-native"
+import { View, Image, StatusBar, Alert } from "react-native"
 
 //tem o site que da pra consultar os ícones
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons"
-import { Link } from "expo-router"
+import { Link, router } from "expo-router"
 
 
 import { colors } from "@/styles/colors"
 import { Input } from "@/components/input"
 import { Button } from "@/components/button"
+import { useState } from "react"
 
 export default function Register(){
+  const[name, setName] = useState("");
+  const[email, setEmail] = useState("")
+
+  function handleRegister(){
+    if(!name.trim() || !email.trim()){
+      return Alert.alert("Inscrição","Preencha todos os campos!")
+    }
+    router.push("/ticket")
+
+  }
+
   return(
     <View className="flex-1 bg-green-500 items-center justify-center p-8">
       
@@ -26,6 +38,7 @@ export default function Register(){
           />
           <Input.Field 
             placeholder="Nome completo"
+            onChangeText={setName}
           />
         </Input>
 
@@ -38,10 +51,15 @@ export default function Register(){
           <Input.Field 
             placeholder="Email"
             keyboardType="email-address"
+            onChangeText={setEmail}
           />
         </Input>
 
-        <Button title="Realizar inscrição" onPress={() => console.warn("clicou")}/>
+        <Button 
+          title="Realizar inscrição" 
+          onPress={handleRegister}
+
+        />
 
         <Link 
           href="/"
