@@ -3,14 +3,15 @@ import { Feather } from "@expo/vector-icons"
 import { colors } from "@/styles/colors";
 
 import { QRCode } from "@/components/qrcode";
+import { BadgeStore } from "@/store/badge-store";
 
 type Props = {
-  image?: string
+  data: BadgeStore
   onChangeAvatar?: () => void
   onExpandQRCode?: () => void
 }
 
-export function Credential({ onChangeAvatar, onExpandQRCode, image } : Props){
+export function Credential({ data, onChangeAvatar, onExpandQRCode } : Props){
   return (
     <View className="w-full self-stretch items-center">
       <Image 
@@ -26,8 +27,12 @@ export function Credential({ onChangeAvatar, onExpandQRCode, image } : Props){
           <View
             className="w-full flex-row items-center justify-between"
           >
-            <Text className="text-zinc-50 text-sm font-bold">Unite summit</Text>
-            <Text className="text-zinc-50 text-sm font-bold">#123</Text>
+            <Text className="text-zinc-50 text-sm font-bold">
+              {data.eventTitle}
+            </Text>
+            <Text className="text-zinc-50 text-sm font-bold">
+              #{data.id}
+            </Text>
           </View>
 
           <View 
@@ -36,12 +41,12 @@ export function Credential({ onChangeAvatar, onExpandQRCode, image } : Props){
         </ImageBackground>
 
         {
-          image ? (
+          data.image ? (
             <TouchableOpacity
               activeOpacity={0.9}  
               onPress={onChangeAvatar}
             >
-              <Image source={{ uri: image}} 
+              <Image source={{ uri: data.image}} 
                 className="w-36 h-36 rounded-full -mt-24"
               />
             </TouchableOpacity>
@@ -68,16 +73,16 @@ export function Credential({ onChangeAvatar, onExpandQRCode, image } : Props){
         <Text
           className="font-bold text-2xl text-zinc-50 mt-4"
         >
-          Carol Nogueira
+          {data.name}
         </Text>
 
         <Text
           className="font-regular text-base text-zinc-300 mb-4"
         >
-          Carol.ngr9@gmail.com
+          {data.email}
         </Text>
 
-        <QRCode value="teste" size={120} />
+        <QRCode value={data.checkInURL} size={120} />
 
         <TouchableOpacity
           activeOpacity={0.7}

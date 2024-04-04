@@ -6,7 +6,8 @@ import {
   ScrollView, 
   TouchableOpacity, 
   Alert,
-  Modal
+  Modal,
+  Share
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons"
 
@@ -15,12 +16,36 @@ import { Credential } from "@/components/credential";
 import { colors } from "@/styles/colors";
 import { Button } from "@/components/button";
 import * as ImagePicker from "expo-image-picker";
+import { Redirect  } from "expo-router";
+
+import { useBadgeStore } from "@/store/badge-store"
+
 import { QRCode } from "@/components/qrcode";
 
 
 export default function Ticket(){
-  const [image, SetImage] = useState("")
   const [expandQRCode, SetExpandQRCode] = useState(false)
+
+  const badgeStore = useBadgeStore()
+
+  async function handleShare(){
+
+    try {
+      if(badgeStore.data?.checkInURL){
+        await Share.share({
+          message: badgeStore.data.checkInURL,
+        })
+      }
+      
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Compartilhar","Não foi possível compartilhar.")
+    }
+
+
+  }
+
+  
 
   async function handleSelectImage(){
     try{
@@ -31,7 +56,7 @@ export default function Ticket(){
      })
 
      if(result.assets){
-       SetImage(result.assets[0].uri)
+      badgeStore.updateAavatar(result.assets[0].uri)
 
      }
 
@@ -39,6 +64,11 @@ export default function Ticket(){
       console.log(error)
       Alert.alert("Foto","Não foi possível selecionar a imagem.")
     }
+  }
+
+  if(!badgeStore.data?.checkInURL){
+    return <Redirect href="/" />
+
   }
 
   return(
@@ -52,7 +82,7 @@ export default function Ticket(){
         showsVerticalScrollIndicator={false}
       >
         <Credential 
-          image={image}  
+          data={badgeStore.data}  
           onChangeAvatar={handleSelectImage}
           onExpandQRCode={() => SetExpandQRCode(true)}
         />
@@ -72,19 +102,22 @@ export default function Ticket(){
         <Text
           className="text-white font-regular text-base mt-1 mb-6"
         >
-          Mostre ao mundo que você vai participar do Unite Summit!
+          Mostre ao mundo que você vai participar do evento{" "}
+          {badgeStore.data.eventTitle}
         </Text>
 
         <Button 
           title="Compartilhar" 
+          onPress={handleShare}
         />
 
         <TouchableOpacity 
           activeOpacity={0.7}
           className="mt-10"
+          onPress={() => badgeStore.remove()}
         >
           <Text
-            className="text-base text-white font-bold text-center"
+            className="text-base text-white font-bold text-center mt-10"
           >
             Remover Ingresso
           </Text>
