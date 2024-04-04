@@ -17,6 +17,7 @@ import { colors } from "@/styles/colors";
 import { Button } from "@/components/button";
 import * as ImagePicker from "expo-image-picker";
 import { Redirect  } from "expo-router";
+import { MotiView } from "moti"
 
 import { useBadgeStore } from "@/store/badge-store"
 
@@ -87,12 +88,28 @@ export default function Ticket(){
           onExpandQRCode={() => SetExpandQRCode(true)}
         />
 
-        <FontAwesome 
-          name="angle-double-down" 
-          color={colors.gray[300]}
-          size={24} 
-          className="self-center my-6"
-        />
+        <MotiView
+          from={{
+            translateY: 0,
+          }}
+          animate={{
+            translateY: 10,
+
+          }}
+          transition={{
+            loop: true,
+            type: "timing",
+            duration: 700,
+          }}
+        >
+          <FontAwesome 
+            name="angle-double-down" 
+            color={colors.gray[300]}
+            size={24} 
+            className="self-center my-6"
+          />
+        </MotiView>
+
         <Text
           className="text-white font-bold text-2xl mt-4"
         >
